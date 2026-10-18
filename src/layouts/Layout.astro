@@ -49,6 +49,9 @@ const schema = {
     <meta name="twitter:image" content={socialImage} />
     <meta name="twitter:image:alt" content={social.alt} />
     <title>{title}</title><script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    <!-- Fathom - beautiful, simple website analytics -->
+    <script is:inline src="https://cdn.usefathom.com/script.js" data-site="GYROBRDP" defer></script>
+    <!-- / Fathom -->
   </head>
   <body><Header /><main id="contenido"><slot /></main><Footer /></body>
 </html>
