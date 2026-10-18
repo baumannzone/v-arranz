@@ -1,0 +1,54 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+import { getSocialImage } from '../data/seo';
+interface Props { title?: string; description?: string; noindex?: boolean }
+const { title = 'V. Arranz · El gusto de volver', description = 'Cocina de raíces vasco-francesas, platos caseros y sobremesas en San Sebastián de los Reyes. Descubre la carta de V. Arranz y reserva tu mesa.', noindex = false } = Astro.props;
+const site = Astro.site ?? new URL('https://www.varranz.com');
+const pathname = Astro.url.pathname;
+const canonicalPath = pathname === '/' || pathname.endsWith('.html') ? pathname : `${pathname.replace(/\/+$/, '')}/`;
+const canonical = new URL(canonicalPath, site);
+const social = getSocialImage(pathname);
+const socialImage = new URL(social.file, site);
+const schema = {
+  '@context': 'https://schema.org', '@type': 'Restaurant', name: 'V. Arranz', url: 'https://www.varranz.com', telephone: '+34912612503', servesCuisine: ['Española', 'Vasco-francesa'], image: 'https://www.varranz.com/social.jpg', menu: 'https://www.varranz.com/carta/',
+  address: { '@type': 'PostalAddress', streetAddress: 'Paseo de María de Maeztu, 7', addressLocality: 'San Sebastián de los Reyes', addressRegion: 'Madrid', postalCode: '28702', addressCountry: 'ES' },
+  openingHoursSpecification: [
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Wednesday', 'Thursday', 'Friday', 'Saturday'], opens: '12:00', closes: '23:45' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Sunday', opens: '12:00', closes: '18:00' },
+  ],
+};
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} /><meta name="theme-color" content="#6c2635" />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="apple-mobile-web-app-title" content="V. Arranz" />
+    <link rel="canonical" href={canonical} />
+    <link rel="preload" href="/fonts/libre-caslon-display.ttf" as="font" type="font/ttf" crossorigin />
+    <meta property="og:type" content="website" /><meta property="og:locale" content="es_ES" /><meta property="og:site_name" content="V. Arranz" />
+    <meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:secure_url" content={socialImage} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={social.alt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <meta name="twitter:image:alt" content={social.alt} />
+    <title>{title}</title><script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body><Header /><main id="contenido"><slot /></main><Footer /></body>
+</html>

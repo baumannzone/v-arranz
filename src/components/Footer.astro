@@ -1,0 +1,8 @@
+---
+import Icon from './Icon.astro';
+import { restaurant } from '../data/restaurant';
+---
+<footer class="site-footer">
+  <div class="footer-top"><a class="wordmark" href="/">V. Arranz<span>BAR & RESTAURANTE</span></a><p>Buena cocina.<br />Mejor compañía.</p><a class="text-link" href={restaurant.phoneHref}>{restaurant.phone} <Icon name="phone" /></a></div>
+  <div class="footer-bottom"><span>© {new Date().getFullYear()} V. Arranz</span><span>San Sebastián de los Reyes · Madrid</span><a href="#">Volver arriba ↑</a></div>
+</footer>

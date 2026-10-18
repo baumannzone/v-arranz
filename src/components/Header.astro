@@ -1,0 +1,41 @@
+---
+import Icon from './Icon.astro';
+import { restaurant } from '../data/restaurant';
+const isMenu = Astro.url.pathname.startsWith('/carta');
+const isContact = Astro.url.pathname.startsWith('/contacto');
+const isRestaurant = Astro.url.pathname.startsWith('/restaurante');
+---
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
+<div class="topline"><span>COCINA CON MEMORIA. MESAS CON HISTORIAS.</span><span>SAN SEBASTIÁN DE LOS REYES, MADRID</span></div>
+<header class="site-header">
+  <a href="/" class="wordmark" aria-label="V. Arranz · Inicio">V. Arranz<span>BAR & RESTAURANTE</span></a>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="main-nav"><span>Menú</span><span class="hamburger" aria-hidden="true"></span></button>
+  <nav id="main-nav" aria-label="Navegación principal">
+    <a href="/restaurante/" aria-current={isRestaurant ? 'page' : undefined}>Nuestra casa</a><a href="/carta/" aria-current={isMenu ? 'page' : undefined}>La carta</a><a href="/contacto/" aria-current={isContact ? 'page' : undefined}>Contacto</a>
+    <a class="button button-small" href={restaurant.phoneHref}>Llamar · {restaurant.phone} <Icon name="phone" /></a>
+  </nav>
+</header>
+<noscript>
+  <style is:inline>
+    @media (max-width: 900px) {
+      .nav-toggle { display: none; }
+      .site-header { height: auto; position: static; flex-wrap: wrap; padding-block: 20px; gap: 20px; }
+      .site-header nav { display: flex; position: static; flex-wrap: wrap; padding: 0; box-shadow: none; border: 0; }
+      .menu-navigation { top: 0; }
+    }
+  </style>
+</noscript>
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.nav-toggle');
+  const nav = document.querySelector<HTMLElement>('#main-nav');
+  function closeMenu() { toggle?.setAttribute('aria-expanded', 'false'); nav?.classList.remove('is-open'); }
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') !== 'true';
+    toggle.setAttribute('aria-expanded', String(open)); nav?.classList.toggle('is-open', open);
+  });
+  nav?.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') { closeMenu(); toggle.focus(); }
+  });
+  matchMedia('(min-width: 901px)').addEventListener('change', closeMenu);
+</script>

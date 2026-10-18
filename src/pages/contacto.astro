@@ -1,0 +1,44 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import RestaurantMap from '../components/RestaurantMap.astro';
+import { restaurant } from '../data/restaurant';
+---
+<Layout title="Contacto y reservas · V. Arranz" description="Encuentra V. Arranz en Paseo de María de Maeztu, 7, San Sebastián de los Reyes. Consulta el mapa y los horarios, y reserva en el 91 261 25 03.">
+  <div class="contact-page section-shell">
+    <a class="back-link" href="/">← Inicio</a>
+    <header class="contact-intro">
+      <div><p class="eyebrow">CONTACTO Y RESERVAS</p><h1>Nos vemos<br /> <em>en la mesa.</em></h1></div>
+      <p>En San Sebastián de los Reyes, una mesa para compartir y una cocina a la que volver. Solo faltas tú.</p>
+    </header>
+    <section class="visit-grid" aria-label="Prepara tu visita">
+      <div class="visit-details">
+        <div class="visit-detail"><p class="eyebrow">TE GUARDAMOS UN SITIO</p><a class="visit-phone" href={restaurant.phoneHref}>{restaurant.phone} <Icon name="phone" /></a><p>Para reservar, llámanos y cuéntanos cuántos venís. Si celebras algo especial, hablemos de los detalles.</p></div>
+        <div class="visit-detail"><h2 class="eyebrow">DÓNDE ESTAMOS</h2><address>{restaurant.address}<br />{restaurant.locality}<br />28702 · Madrid</address><a class="text-link" href={restaurant.maps} target="_blank" rel="noopener noreferrer">Cómo llegar <Icon /></a></div>
+        <div class="visit-detail"><h2 class="eyebrow">NUESTRO HORARIO</h2><dl class="hours"><div><dt>Miércoles a sábado</dt><dd>12:00 – 23:45</dd></div><div><dt>Domingo</dt><dd>12:00 – 18:00</dd></div><div class="rest-days"><dt>Lunes y martes</dt><dd>Descansamos</dd></div></dl></div>
+      </div>
+      <div class="visit-map"><RestaurantMap /><p class="map-note">El camino es corto cuando al final te espera una buena mesa.</p></div>
+    </section>
+    <aside class="contact-farewell"><span>Una comida en familia. Una celebración. Un día cualquiera.</span><a class="button" href={restaurant.phoneHref}>Llamar para reservar <Icon name="phone" /></a></aside>
+  </div>
+</Layout>
+<style>
+  .contact-page { padding-block: 40px 70px; }
+  .contact-intro { display: grid; grid-template-columns: 1.2fr 1fr; gap: 80px; align-items: end; margin-bottom: 65px; }
+  h1 { font-size: clamp(64px, 7vw, 100px); color: var(--wine); }
+  .contact-intro > p { color: var(--muted); max-width: 340px; font-size: 15px; margin-bottom: 10px; }
+  .visit-grid { display: grid; grid-template-columns: .8fr 1.4fr; gap: 75px; }
+  .visit-detail + .visit-detail { border-top: 1px solid var(--line); padding-top: 26px; margin-top: 26px; }
+  .visit-detail .eyebrow { margin-bottom: 14px; font-family: var(--sans); }
+  .visit-phone { font-family: var(--serif); font-size: 36px; line-height: 1.3; color: var(--wine); display: flex; align-items: center; gap: 24px; }
+  .visit-detail p:not(.eyebrow) { font-size: 12px; color: var(--muted); margin-top: 15px; max-width: 330px; }
+  address { font-style: normal; font-size: 14px; }
+  .visit-detail .text-link { margin-top: 12px; }
+  .hours { font-size: 13px; }
+  .rest-days { color: var(--muted); margin-top: 10px; }
+  .map-note { font-family: var(--serif); font-size: 24px; font-style: italic; color: var(--wine); margin-top: 24px; max-width: 430px; line-height: 1.4; }
+  .contact-farewell { border-block: 1px solid var(--line); margin-top: 65px; padding-block: 30px; display: flex; align-items: center; justify-content: space-between; gap: 25px; }
+  .contact-farewell > span { font-family: var(--serif); color: var(--wine); font-size: 29px; line-height: 1.3; }
+  @media (max-width: 900px) { .visit-grid { gap: 35px; grid-template-columns: 1fr 1.2fr; } .contact-intro { gap: 35px; } .visit-phone { font-size: 30px; } .hours { font-size: 12px; } }
+  @media (max-width: 600px) { .contact-page { padding-block: 25px 30px; } .contact-intro { grid-template-columns: 1fr; gap: 24px; margin-bottom: 35px; } h1 { font-size: 65px; } .contact-intro > p { font-size: 14px; } .visit-grid { grid-template-columns: 1fr; gap: 40px; } .visit-phone { font-size: 36px; } .hours { font-size: 13px; } .contact-farewell { flex-direction: column; align-items: flex-start; margin-top: 40px; } .contact-farewell > span { font-size: 27px; } }
+</style>

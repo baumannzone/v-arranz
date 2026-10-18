@@ -1,0 +1,4 @@
+Edit this final restaurant social card. Replace ONLY the small address block below the telephone with TWO lines of widely tracked uppercase sans-serif text exactly:
+PASEO DE MARÍA DE MAEZTU, 7
+SAN SEBASTIÁN DE LOS REYES
+Critical: city word is SEBASTIÁN (contains Á, never Ó). Render each line exactly as given using crisp printed uppercase. Make address text slightly smaller to fit in existing left cream panel. Preserve all other text, title, telephone, photograph, colors, spacing, dimensions and overall composition unchanged.
