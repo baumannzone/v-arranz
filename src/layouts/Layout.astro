@@ -3,6 +3,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 import { getSocialImage } from '../data/seo';
+import { restaurant } from '../data/restaurant';
 interface Props { title?: string; description?: string; noindex?: boolean }
 const { title = 'V. Arranz · El gusto de volver', description = 'Cocina de raíces vasco-francesas, platos caseros y sobremesas en San Sebastián de los Reyes. Descubre la carta de V. Arranz y reserva tu mesa.', noindex = false } = Astro.props;
 const site = Astro.site ?? new URL('https://www.varranz.com');
@@ -12,9 +13,12 @@ const canonical = new URL(canonicalPath, site);
 const social = getSocialImage(pathname);
 const socialImage = new URL(social.file, site);
 const schema = {
-  '@context': 'https://schema.org', '@type': 'Restaurant', name: 'V. Arranz', url: 'https://www.varranz.com', telephone: '+34912612503', servesCuisine: ['Española', 'Vasco-francesa'], image: 'https://www.varranz.com/social.jpg', menu: 'https://www.varranz.com/carta/',
-  address: { '@type': 'PostalAddress', streetAddress: 'Paseo de María de Maeztu, 7', addressLocality: 'San Sebastián de los Reyes', addressRegion: 'Madrid', postalCode: '28702', addressCountry: 'ES' },
+  '@context': 'https://schema.org', '@type': 'Restaurant', '@id': 'https://www.varranz.com/#restaurant', name: restaurant.name, url: 'https://www.varranz.com', telephone: '+34912612503', servesCuisine: ['Española', 'Vasco-francesa'], image: 'https://www.varranz.com/social.jpg', menu: 'https://www.varranz.com/carta/',
+  address: { '@type': 'PostalAddress', streetAddress: restaurant.address, addressLocality: restaurant.locality, addressRegion: 'Madrid', postalCode: '28702', addressCountry: 'ES' },
+  geo: { '@type': 'GeoCoordinates', latitude: restaurant.latitude, longitude: restaurant.longitude },
+  hasMap: restaurant.maps,
   openingHoursSpecification: [
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday'], opens: '00:00', closes: '00:00' },
     { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Wednesday', 'Thursday', 'Friday', 'Saturday'], opens: '12:00', closes: '23:45' },
     { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Sunday', opens: '12:00', closes: '18:00' },
   ],

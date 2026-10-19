@@ -1,6 +1,7 @@
 export const restaurant = {
   name: 'V. Arranz', phone: '91 261 25 03', phoneHref: 'tel:+34912612503',
   address: 'Paseo de María de Maeztu, 7', locality: 'San Sebastián de los Reyes',
+  latitude: 40.5613653, longitude: -3.6224546,
   maps: 'https://www.google.com/maps/search/?api=1&query=V.+Arranz+Paseo+de+Mar%C3%ADa+de+Maeztu+7+San+Sebasti%C3%A1n+de+los+Reyes',
 };
 // Source: https://www.varranz.com/carta.html, checked 2026-10-19.
