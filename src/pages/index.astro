@@ -10,6 +10,7 @@ import tartar from '../assets/tartar.png';
 import postres from '../assets/postres.png';
 import detalle from '../assets/detalle.png';
 import eventos from '../assets/eventos.png';
+import bogavante from '../assets/bogavante-google.jpg';
 const dishes = [
   { image: foie, title: 'Terrina casera de foie', category: 'PARA ABRIR BOCA', href: '/carta/#entrantes' },
   { image: tartar, title: 'Tartar de solomillo', category: 'CON NUESTRO SELLO', href: '/carta/#carnes' },
@@ -38,9 +39,13 @@ const dishes = [
   </section>
   <section class="specialties section-space" aria-labelledby="specialties-title">
     <div class="section-shell"><div class="section-heading"><div><p class="eyebrow">BUEN PRODUCTO. BUENAS MANOS.</p><h2 id="specialties-title">Hay sabores que <em>se quedan.</em></h2></div><a class="text-link" href="/carta/">Ver toda la carta <Icon /></a></div>
-      <div class="dish-grid">{dishes.map(dish => <a class="dish-card" href={dish.href}><div class="dish-photo"><Image src={dish.image} alt={dish.title} width={700} format="webp" loading="lazy" /><span class="dish-arrow"><Icon /></span></div><p class="eyebrow">{dish.category}</p><h3>{dish.title}</h3></a>)}</div>
+      <div class="dish-grid">{dishes.map(dish => <a class="dish-card" href={dish.href}><div class="dish-photo"><Image class="food-photo" src={dish.image} alt={dish.title} width={700} format="webp" loading="lazy" /><span class="dish-arrow"><Icon /></span></div><p class="eyebrow">{dish.category}</p><h3>{dish.title}</h3></a>)}</div>
       <p class="menu-footnote">Del primer aperitivo al último café. <a href="/carta/">Encuentra tu próximo plato favorito.</a></p>
     </div>
+  </section>
+  <section class="gallery-preview section-shell section-space" aria-labelledby="gallery-preview-title">
+    <div class="gallery-preview-heading"><div><p class="eyebrow">UN POCO DE NUESTRA CASA</p><h2 id="gallery-preview-title">Una mirada antes<br /> de <em>sentarte a la mesa.</em></h2></div><a class="text-link" href="/galeria/">Ver la galería <Icon /></a></div>
+    <div class="gallery-preview-images"><Image src={salon} alt="El salón de V. Arranz preparado para recibir a sus clientes" width={720} format="webp" loading="lazy" /><Image class="food-photo" src={bogavante} alt="Ensalada de bogavante servida en V. Arranz" width={540} format="webp" loading="lazy" /><Image src={detalle} alt="Una vista del comedor y sus cuadros" width={540} format="webp" loading="lazy" /></div>
   </section>
   <section id="celebraciones" class="celebrations section-shell section-space">
     <div class="celebration-copy"><p class="eyebrow">LOS BUENOS MOMENTOS, A LA MESA</p><h2>El motivo lo pones tú.<br /> <em>La mesa, nosotros.</em></h2><p>Un cumpleaños, una comida de familia, una cena de empresa. O simplemente las ganas de juntarse. Hay ocasiones que merecen una buena sobremesa.</p><p>Cuéntanos qué quieres celebrar y hablemos del menú y de los detalles.</p><a class="button" href={restaurant.phoneHref}>Hablemos de tu celebración <Icon name="phone" /></a><span class="celebration-note">Familia · Amigos · Empresa</span></div>
@@ -52,3 +57,18 @@ const dishes = [
     <div class="section-shell" style="margin-top:45px"><RestaurantMap /></div>
   </section>
 </Layout>
+<style>
+  .gallery-preview-heading { display: flex; justify-content: space-between; align-items: end; gap: 35px; margin-bottom: 35px; }
+  .gallery-preview-heading h2 { font-size: clamp(42px, 4.5vw, 64px); }
+  .gallery-preview-images { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 14px; }
+  .gallery-preview-images img { width: 100%; height: 285px; object-fit: cover; }
+  .food-photo { filter: brightness(1.04) contrast(.97) saturate(.92) sepia(.025); }
+  @media (max-width: 900px) { .gallery-preview-images img { height: 220px; } }
+  @media (max-width: 600px) {
+    .gallery-preview-heading { align-items: start; flex-direction: column; gap: 16px; }
+    .gallery-preview-heading h2 { font-size: 43px; }
+    .gallery-preview-images { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .gallery-preview-images img { height: 180px; }
+    .gallery-preview-images img:first-child { grid-column: 1 / -1; height: 245px; }
+  }
+</style>

@@ -4,6 +4,7 @@ import { restaurant } from '../data/restaurant';
 const isMenu = Astro.url.pathname.startsWith('/carta');
 const isContact = Astro.url.pathname.startsWith('/contacto');
 const isRestaurant = Astro.url.pathname.startsWith('/restaurante');
+const isGallery = Astro.url.pathname.startsWith('/galeria');
 ---
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
 <div class="topline"><span>COCINA CON MEMORIA. MESAS CON HISTORIAS.</span><span>SAN SEBASTIÁN DE LOS REYES, MADRID</span></div>
@@ -11,7 +12,7 @@ const isRestaurant = Astro.url.pathname.startsWith('/restaurante');
   <a href="/" class="wordmark" aria-label="V. Arranz · Inicio">V. Arranz<span>BAR & RESTAURANTE</span></a>
   <button class="nav-toggle" aria-expanded="false" aria-controls="main-nav"><span>Menú</span><span class="hamburger" aria-hidden="true"></span></button>
   <nav id="main-nav" aria-label="Navegación principal">
-    <a href="/restaurante/" aria-current={isRestaurant ? 'page' : undefined}>Nuestra casa</a><a href="/carta/" aria-current={isMenu ? 'page' : undefined}>La carta</a><a href="/contacto/" aria-current={isContact ? 'page' : undefined}>Contacto</a>
+    <a href="/restaurante/" aria-current={isRestaurant ? 'page' : undefined}>Nuestra casa</a><a href="/carta/" aria-current={isMenu ? 'page' : undefined}>La carta</a><a href="/galeria/" aria-current={isGallery ? 'page' : undefined}>Galería</a><a href="/contacto/" aria-current={isContact ? 'page' : undefined}>Contacto</a>
     <a class="button button-small" href={restaurant.phoneHref}>Llamar · {restaurant.phone} <Icon name="phone" /></a>
   </nav>
 </header>

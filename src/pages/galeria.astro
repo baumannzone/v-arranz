@@ -1,0 +1,164 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import { restaurant } from '../data/restaurant';
+import salon from '../assets/salon.png';
+import salonAlt from '../assets/salon-alt.png';
+import detalle from '../assets/detalle.png';
+import tartar from '../assets/tartar-google.jpg';
+import bogavante from '../assets/bogavante-google.jpg';
+import postre from '../assets/postre-google.jpg';
+import salmon from '../assets/salmon.png';
+import eventos from '../assets/eventos.png';
+
+const photos = [
+  { image: salon, title: 'Nuestra casa', alt: 'Salón de V. Arranz preparado con manteles blancos y servilletas burdeos', size: 'feature' },
+  { image: bogavante, title: 'Para abrir boca', alt: 'Ensalada de bogavante servida sobre un mantel blanco en V. Arranz', size: 'side', kind: 'food' },
+  { image: tartar, title: 'Con nuestro sello', alt: 'Tartar de carne servido con pepinillos y tomate en V. Arranz', size: 'third', kind: 'food' },
+  { image: postre, title: 'Hecho en casa', alt: 'Postre en capas con decoración de chocolate y salsa de frutos rojos', size: 'third', kind: 'food' },
+  { image: salmon, title: 'Sabores de siempre', alt: 'Salmón marinado servido en el restaurante', size: 'third', kind: 'food' },
+  { image: detalle, title: 'Cada rincón cuenta', alt: 'Mesas del comedor y cuadros en las paredes de V. Arranz', size: 'side' },
+  { image: eventos, title: 'Para celebrar', alt: 'Amigos brindando con copas alrededor de una mesa', size: 'feature' },
+  { image: salonAlt, title: 'Te esperamos en la mesa', alt: 'Otra vista del comedor de V. Arranz preparado para recibir a sus clientes', size: 'wide' },
+] as const;
+
+const gallery = await Promise.all(photos.map(async photo => ({
+  ...photo,
+  full: (await getImage({ src: photo.image, width: Math.min(photo.image.width, 1440), format: 'webp', quality: 84 })).src,
+})));
+---
+<Layout title="Galería de fotos · V. Arranz" description="Un recorrido en imágenes por el restaurante V. Arranz: nuestro salón, platos caseros y momentos para compartir en San Sebastián de los Reyes.">
+  <div class="gallery-intro section-shell">
+    <a class="back-link" href="/">← Inicio</a>
+    <div class="gallery-heading">
+      <div><p class="eyebrow">V. ARRANZ · EN IMÁGENES</p><h1>Nuestra casa,<br /><em>más de cerca.</em></h1></div>
+      <p>El salón, los platos y esos momentos que se alargan alrededor de la mesa. Echa un vistazo antes de venir.</p>
+    </div>
+  </div>
+
+  <section class="section-shell gallery-section" aria-label="Fotos del restaurante V. Arranz">
+    <div class="gallery-grid">
+      {gallery.map((photo, index) => (
+        <a class:list={['gallery-card', `gallery-card--${photo.size}`, photo.kind === 'food' && 'gallery-card--food']} href={photo.full} data-gallery-item data-title={photo.title} data-alt={photo.alt} aria-label={`Ampliar foto: ${photo.title}`}>
+          <Image src={photo.image} alt={photo.alt} widths={[360, 720, 1040]} sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 60vw" format="webp" quality={80} loading={index < 2 ? 'eager' : 'lazy'} />
+          <span class="gallery-card-caption"><span>{String(index + 1).padStart(2, '0')} / {String(gallery.length).padStart(2, '0')}</span><strong>{photo.title}</strong><span class="gallery-expand" aria-hidden="true">↗</span></span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="gallery-invitation">
+    <div class="section-shell"><div><p class="eyebrow">LA FOTO QUE FALTA ES LA TUYA</p><h2>Nos vemos <em>en la mesa.</em></h2></div><a class="button" href={restaurant.phoneHref}>Llamar para reservar <Icon name="phone" /></a></div>
+  </section>
+
+  <dialog id="gallery-dialog" class="gallery-dialog" aria-labelledby="gallery-dialog-title">
+    <div class="dialog-inner">
+      <button class="dialog-close" type="button" aria-label="Cerrar foto">×</button>
+      <img class="dialog-image" alt="" />
+      <div class="dialog-footer">
+        <div><span class="dialog-counter"></span><h2 id="gallery-dialog-title"></h2></div>
+        <div class="dialog-controls"><button class="dialog-prev" type="button" aria-label="Foto anterior">←</button><button class="dialog-next" type="button" aria-label="Foto siguiente">→</button></div>
+      </div>
+    </div>
+  </dialog>
+</Layout>
+
+<script>
+  const items = [...document.querySelectorAll<HTMLAnchorElement>('[data-gallery-item]')];
+  const dialog = document.querySelector<HTMLDialogElement>('#gallery-dialog');
+  const image = dialog?.querySelector<HTMLImageElement>('.dialog-image');
+  const title = dialog?.querySelector<HTMLElement>('#gallery-dialog-title');
+  const counter = dialog?.querySelector<HTMLElement>('.dialog-counter');
+  let active = 0;
+  let trigger: HTMLAnchorElement | undefined;
+
+  function showPhoto(index: number) {
+    if (!image || !title || !counter || items.length === 0) return;
+    active = (index + items.length) % items.length;
+    const item = items[active];
+    image.src = item.href;
+    image.alt = item.dataset.alt ?? '';
+    title.textContent = item.dataset.title ?? '';
+    counter.textContent = `${String(active + 1).padStart(2, '0')} / ${String(items.length).padStart(2, '0')}`;
+  }
+
+  items.forEach((item, index) => item.addEventListener('click', event => {
+    if (!dialog) return;
+    event.preventDefault();
+    trigger = item;
+    showPhoto(index);
+    dialog.showModal();
+  }));
+  dialog?.querySelector('.dialog-close')?.addEventListener('click', () => dialog.close());
+  dialog?.querySelector('.dialog-prev')?.addEventListener('click', () => showPhoto(active - 1));
+  dialog?.querySelector('.dialog-next')?.addEventListener('click', () => showPhoto(active + 1));
+  dialog?.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+  dialog?.addEventListener('close', () => { image?.removeAttribute('src'); trigger?.focus(); });
+  document.addEventListener('keydown', event => {
+    if (!dialog?.open) return;
+    if (event.key === 'ArrowLeft') { event.preventDefault(); showPhoto(active - 1); }
+    if (event.key === 'ArrowRight') { event.preventDefault(); showPhoto(active + 1); }
+  });
+</script>
+
+<style>
+  .gallery-intro { padding-top: 40px; }
+  .gallery-heading { display: grid; grid-template-columns: 1.5fr 1fr; align-items: end; gap: 70px; margin-bottom: 55px; }
+  .gallery-heading h1 { color: var(--wine); font-size: clamp(58px, 7vw, 104px); }
+  .gallery-heading > p { max-width: 350px; color: var(--muted); font-size: 14px; margin-bottom: 8px; }
+  .gallery-section { padding-bottom: 110px; }
+  .gallery-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 18px; }
+  .gallery-card { position: relative; display: block; overflow: hidden; height: 360px; background: var(--paper); color: #fff; }
+  .gallery-card--feature { grid-column: span 7; height: 460px; }
+  .gallery-card--side { grid-column: span 5; height: 460px; }
+  .gallery-card--third { grid-column: span 4; }
+  .gallery-card--wide { grid-column: span 12; height: 410px; }
+  .gallery-card img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+  .gallery-card--food img { filter: brightness(1.04) contrast(.97) saturate(.92) sepia(.025); }
+  .gallery-card:hover img { transform: scale(1.035); }
+  .gallery-card::after { content: ''; position: absolute; inset: 45% 0 0; background: linear-gradient(transparent, #21140dbd); pointer-events: none; }
+  .gallery-card-caption { position: absolute; z-index: 1; bottom: 0; left: 0; right: 0; display: flex; align-items: end; gap: 14px; padding: 25px; }
+  .gallery-card-caption > span:first-child { font-size: 9px; letter-spacing: .12em; white-space: nowrap; padding-bottom: 6px; }
+  .gallery-card-caption strong { font: italic 30px/1.1 var(--serif); margin-right: auto; }
+  .gallery-expand { font-size: 21px; line-height: 1; }
+  .gallery-invitation { background: var(--paper); padding-block: 70px; }
+  .gallery-invitation .section-shell { display: flex; align-items: end; justify-content: space-between; gap: 30px; }
+  .gallery-invitation h2 { font-size: clamp(42px, 5vw, 68px); }
+  .gallery-invitation .eyebrow { margin-bottom: 14px; }
+  .gallery-dialog { width: min(1100px, calc(100vw - 48px)); max-height: calc(100dvh - 48px); padding: 0; border: 0; background: var(--cream); color: var(--ink); box-shadow: 0 20px 70px #1d0f0faa; }
+  .gallery-dialog::backdrop { background: #1d1310df; }
+  .dialog-inner { position: relative; }
+  .dialog-image { width: 100%; max-height: calc(100dvh - 145px); object-fit: contain; background: #251b18; }
+  .dialog-close { position: absolute; top: 14px; right: 14px; display: grid; place-items: center; width: 44px; height: 44px; border: 0; background: var(--cream); color: var(--wine); font-size: 28px; line-height: 1; cursor: pointer; }
+  .dialog-footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 16px 22px; }
+  .dialog-counter { font-size: 9px; letter-spacing: .15em; color: var(--muted); }
+  .dialog-footer h2 { font-size: 28px; color: var(--wine); margin-top: 4px; }
+  .dialog-controls { display: flex; gap: 8px; }
+  .dialog-controls button { width: 44px; height: 44px; border: 1px solid var(--line); background: transparent; color: var(--wine); font-size: 22px; cursor: pointer; }
+  .dialog-controls button:hover, .dialog-close:hover { background: var(--wine); color: var(--cream); }
+  @media (max-width: 900px) {
+    .gallery-heading { gap: 35px; }
+    .gallery-card, .gallery-card--feature, .gallery-card--side, .gallery-card--third, .gallery-card--wide { grid-column: span 6; height: 310px; }
+    .gallery-card:first-child, .gallery-card:last-child { grid-column: span 12; height: 390px; }
+  }
+  @media (max-width: 600px) {
+    .gallery-intro { padding-top: 25px; }
+    .gallery-heading { grid-template-columns: 1fr; gap: 20px; margin-bottom: 35px; }
+    .gallery-heading h1 { font-size: clamp(52px, 14vw, 76px); }
+    .gallery-heading > p { font-size: 13px; }
+    .gallery-grid { gap: 12px; }
+    .gallery-card, .gallery-card--feature, .gallery-card--side, .gallery-card--third, .gallery-card--wide, .gallery-card:first-child, .gallery-card:last-child { grid-column: span 12; height: 265px; }
+    .gallery-card:first-child { height: 320px; }
+    .gallery-card-caption { padding: 18px; gap: 10px; }
+    .gallery-card-caption strong { font-size: 25px; }
+    .gallery-section { padding-bottom: 65px; }
+    .gallery-invitation { padding-block: 55px; }
+    .gallery-invitation .section-shell { flex-direction: column; align-items: start; }
+    .gallery-dialog { width: calc(100vw - 20px); max-height: calc(100dvh - 20px); }
+    .dialog-image { max-height: calc(100dvh - 120px); }
+    .dialog-footer { padding: 12px 14px; }
+    .dialog-footer h2 { font-size: 23px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .gallery-card img { transition: none; } }
+</style>

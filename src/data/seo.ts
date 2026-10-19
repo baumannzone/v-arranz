@@ -11,6 +11,10 @@ export const socialImages = {
     file: '/og/carta.jpg',
     alt: 'La carta de V. Arranz · Sabores que se quedan. Cocina vasco-francesa hecha en casa.',
   },
+  '/galeria/': {
+    file: '/og/restaurante.jpg',
+    alt: 'Galería de V. Arranz · Un recorrido en imágenes por nuestra casa y nuestra cocina.',
+  },
   '/contacto/': {
     file: '/og/contacto.jpg',
     alt: 'Contacto y reservas en V. Arranz · Tu mesa te espera. Teléfono 91 261 25 03.',

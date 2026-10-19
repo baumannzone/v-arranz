@@ -4,8 +4,46 @@ import Icon from '../components/Icon.astro';
 import { menu, priceWithVat, restaurant } from '../data/restaurant';
 ---
 <Layout title="La carta · V. Arranz" description="Raciones, entrantes, pescados, carnes, postres caseros y bodega. Descubre la carta de V. Arranz en San Sebastián de los Reyes.">
-  <section class="menu-hero section-shell"><a class="back-link" href="/">← Inicio</a><p class="eyebrow">COCINA CON RAÍCES. A TU GUSTO.</p><h1>Hoy, ¿qué <em>te apetece?</em></h1><p>Para compartir, para darte un homenaje, para volver.<br /> Elige cómo empieza tu sobremesa.</p><span class="vat-note">Precios con 10 % de IVA incluido</span></section>
+  <section class="menu-hero section-shell"><a class="back-link" href="/">← Inicio</a><p class="eyebrow">COCINA CON RAÍCES. A TU GUSTO.</p><h1>Hoy, ¿qué <em>te apetece?</em></h1><p>Para compartir, para darte un homenaje, para volver.<br /> Elige cómo empieza tu sobremesa.</p></section>
   <div class="menu-navigation"><div class="section-shell"><nav aria-label="Categorías de la carta">{menu.map(category => <a href={`#${category.id}`}>{category.name}</a>)}</nav></div></div>
-  <div class="menu-content section-shell">{menu.map((category, index) => <section class="menu-category" id={category.id} aria-labelledby={`title-${category.id}`}><div class="category-intro"><span class="category-number">0{index + 1}</span><h2 id={`title-${category.id}`}>{category.name}</h2><p>{category.intro}</p></div><ul class="menu-items">{category.dishes.map(([name, price]) => <li><span>{name}</span><span class="price">{priceWithVat(price)}</span></li>)}</ul></section>)}<p class="allergen-note">Si tienes alguna alergia o intolerancia, consúltanos antes de pedir. Disponibilidad y precios sujetos a confirmación en el restaurante.</p></div>
+  <div class="menu-content section-shell">{menu.map((category, index) => <section class="menu-category" id={category.id} aria-labelledby={`title-${category.id}`}><div class="category-intro"><span class="category-number">0{index + 1}</span><h2 id={`title-${category.id}`}>{category.name}</h2><p>{category.intro}</p></div><ul class="menu-items">{category.dishes.map(([name, price]) => <li><span>{name}</span><span class="price">{priceWithVat(price)}</span></li>)}</ul></section>)}<p class="allergen-note">Precios con 10 % de IVA incluido.<br />Si tienes alguna alergia o intolerancia, consúltanos antes de pedir. Disponibilidad y precios sujetos a confirmación en el restaurante.</p></div>
   <section class="menu-cta"><p class="eyebrow">EL SIGUIENTE PASO ES SENTARSE</p><h2>Tu mesa <em>te espera.</em></h2><a class="button" href={restaurant.phoneHref}>Llamar · {restaurant.phone} <Icon name="phone" /></a></section>
 </Layout>
+
+<script>
+  const navigation = document.querySelector<HTMLElement>('.menu-navigation');
+  const nav = navigation?.querySelector<HTMLElement>('nav');
+  const links = [...(nav?.querySelectorAll<HTMLAnchorElement>('a[href^="#"]') ?? [])];
+  const categories = links.map(link => ({ link, section: document.getElementById(link.hash.slice(1)) })).filter((item): item is { link: HTMLAnchorElement; section: HTMLElement } => item.section instanceof HTMLElement);
+  let activeLink: HTMLAnchorElement | undefined;
+  let scheduled = false;
+
+  function updateActiveCategory() {
+    scheduled = false;
+    if (!navigation || !nav) return;
+    const marker = navigation.getBoundingClientRect().bottom + Math.min(80, window.innerHeight * 0.15);
+    const current = categories.find(({ section }) => {
+      const bounds = section.getBoundingClientRect();
+      return bounds.top <= marker && bounds.bottom > marker;
+    })?.link;
+    if (current === activeLink) return;
+    activeLink?.removeAttribute('aria-current');
+    activeLink = current;
+    if (!current) return;
+    current.setAttribute('aria-current', 'location');
+    const left = current.offsetLeft - (nav.clientWidth - current.clientWidth) / 2;
+    nav.scrollTo({ left, behavior: 'smooth' });
+  }
+
+  function scheduleUpdate() {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(updateActiveCategory);
+  }
+
+  window.addEventListener('scroll', scheduleUpdate, { passive: true });
+  window.addEventListener('resize', scheduleUpdate);
+  window.addEventListener('hashchange', scheduleUpdate);
+  window.addEventListener('load', scheduleUpdate);
+  scheduleUpdate();
+</script>
